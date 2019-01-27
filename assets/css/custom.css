@@ -1,0 +1,26 @@
+.reveal section img {
+    margin: 0px;
+    background: unset;
+    border: 0px;
+    box-shadow: unset;
+ }
+
+ #high5dev_logo {
+     width: 50%;
+ }
+
+ .reveal h1{
+    text-transform: unset;
+ }
+
+ .reveal h2{
+    text-transform: unset;
+ }
+
+ .reveal h3{
+    text-transform: unset;
+ }
+
+ .reveal h4{
+    text-transform: unset;
+ }
