@@ -84,10 +84,18 @@
 					</section>
 				</section>
 				<section>
-					<blockquote cite="https://jessitron.com/2013/04/25/property-based-testing-what-is-it/">
-						Property-based tests make statements about the output of your code based on the input, and these statements are verified for many different possible inputs.
-					</blockquote>
-					Jessica Joy Kerr via <a href="https://jessitron.com/2013/04/25/property-based-testing-what-is-it/">jessitron.com</a>
+					<section>
+						<blockquote cite="https://jessitron.com/2013/04/25/property-based-testing-what-is-it/">
+							Property-based tests make statements about the output of your code based on the input, and these statements are verified for many different possible inputs.
+						</blockquote>
+						Jessica Joy Kerr via <a href="https://jessitron.com/2013/04/25/property-based-testing-what-is-it/">jessitron.com</a>
+					</section>
+					<section>
+						<blockquote>
+							Testes de propriedade fazem afirmações sobre a saída do seu código baseadas na entrada, e essas afirmações são verificadas para diferentes entradas possíveis.
+						</blockquote>
+						Tradução livre. Eu mesmo.
+					</section>
 				</section>
 				<section>
 					<section>
@@ -113,6 +121,18 @@
 					</section>
 					<section>
 						<pre><code data-trim data-noescape>
+							[Test]
+							public void SomaDoisNumerosNãoImportaAOrdem()
+							{
+								var resultado1 = Soma(2, 8);
+								var resultado2 = Soma(8, 2);
+
+								Assert.AreEqual(resultado1,resultado2);
+							}
+						</code></pre>
+					</section>
+					<section>
+						<pre><code data-trim data-noescape>
 							var resultado1 = Soma(numero1, numero2);
 							var resultado2 = Soma(numero2, numero1);
 							(resultado1 == resultado2)
@@ -135,22 +155,46 @@
 				</section>
 				<section>
 					<section>
+						<h2>Soma do mesmo número deve ser igual ao dobro dele</h2>
+						<p class="fragment">8 + 8 = 8 * 2</p>
+					</section>
+					<section>
 						<pre><code data-trim data-noescape>
-							[FsCheck.NUnit.Property]
-							public Property SomaDoisNumerosIguaisDeveSerIgualAoDobroDoNumero(int numero1)
-							{
-								var resultado1 = Soma(numero1, numero1);
-								return (resultado1 == (numero1 * 2)).ToProperty();
-							}
+							var resultado = Soma(numero, numero);
+
+							(resultado == numero * 2)
 						</code></pre>
 					</section>
 					<section>
 						<pre><code data-trim data-noescape>
 							[FsCheck.NUnit.Property]
-							public Property SomaDoisNumerosQuandoUmÉZeroDeveRetornarOValorPassado(int numero1)
+							public Property SomaDoisNumerosIguaisDeveSerIgualAoDobroDoNumero(int numero)
 							{
-								var resultado1 = Soma(numero1, 0);
-								return (resultado1 == numero1).ToProperty();
+								var resultado = Soma(numero, numero);
+								return (resultado == (numero * 2)).ToProperty();
+							}
+						</code></pre>
+					</section>
+				</section>
+				<section>
+					<section>
+						<h2>Um número somado a 0, é ele mesmo</h2>
+						<p class="fragment">8 + 0 = 8</p>
+					</section>
+					<section>
+						<pre><code data-trim data-noescape>
+							var resultado = Soma(numero, 0);
+
+							(resultado == numero)
+						</code></pre>
+					</section>
+					<section>
+						<pre><code data-trim data-noescape>
+							[FsCheck.NUnit.Property]
+							public Property SomaDoisNumerosQuandoUmÉZeroDeveRetornarOValorPassado(int numero)
+							{
+								var resultado = Soma(numero, 0);
+								return (resultado == numero).ToProperty();
 							}
 						</code></pre>
 					</section>
@@ -158,6 +202,19 @@
 				<section>
 					<section>
 						Vamos mais fundo?
+					</section>
+					<section>
+						<h2>FlashCards!</h2>
+						<ul>
+							<li>Pega um cartão com uma pergunta</li>
+							<li>Pensa na resposta</li>
+							<li>Confere!</li>
+							<li>Se acerta, o cartão está mais fácil.</li>
+							<li>Se erra, o cartão está mais difícil</li>
+						</ul>
+					</section>
+					<section>
+						Vamos pro código!
 					</section>
 				</section>
 				<section>
@@ -186,6 +243,7 @@
 						<li><a href="https://dev.to/jdsteinhauser/intro-to-property-based-testing-2cj8">Intro to Property-Based Testing</a></li>
 						<li><a href="https://xpirit.com/property-based-testing/">Property-based testing</a></li>
 						<li><a href="http://high5devs.com/2020/05/fscheck-mudando-sua-visao-sobre-testes/">FSCheck: Mudando sua visão sobre testes</a></li>
+						<li><a href="https://github.com/afucher/fscheck-examples">Código usado na apresentação</a></li>
 					</ul>
 				</section>
 
