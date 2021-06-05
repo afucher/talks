@@ -81,6 +81,38 @@
 					</section>
 				</section>
 				<section>
+					<h1>Vamos pensar em um caso "real"</h1>
+				</section>
+				<section>
+					<h2>Requisitos:</h2>
+					<ul>
+						<li>Formas de pagamento: Dinheiro, Cheque ou Cartão</li>
+						<li>Dinheiro: nenhuma informação extra</li>
+						<li>Cheque: número do cheque</li>
+						<li>Cartão: bandeira e número do cartão</li>
+					</ul>
+				</section>
+				<section>
+					<pre><code data-trim data-noescape>
+type NumeroCheque = NumeroCheque of int
+type NumeroCartao = NumeroCartao of string
+					</code></pre>
+					<pre class="fragment"><code data-trim data-noescape>
+						type TipoDeCartao = Visa | Mastercard
+						type CartaoDeCreditoInfo = TipoDeCartao * NumeroCartao
+					</code></pre>
+					<pre class="fragment"><code data-trim data-noescape>
+						type MetodoDePagamento = 
+						 | Dinheiro
+						 | Cheque of NumeroCheque
+						 | Cartao of CartaoDeCreditoInfo
+					</code></pre>
+					<pre class="fragment"><code ><script type="text/template">
+[<Measure>] type Reais
+type Valor = decimal<Reais>
+					</script></code></pre>
+				</section>
+				<section>
 					<h1>Obrigado!</h1>
 					<div>
 						<h4>Arthur Fücher e Lucas Teles</h4>
@@ -95,18 +127,17 @@
 
 		<script src="lib/js/head.min.js"></script>
 		<script src="js/reveal.js"></script>
-
+		<script src="plugin/highlight/highlight.js"></script>
 		<script>
 			// More info about config & dependencies:
 			// - https://github.com/hakimel/reveal.js#configuration
 			// - https://github.com/hakimel/reveal.js#dependencies
 			Reveal.initialize({
 				dependencies: [
-					{ src: 'plugin/markdown/marked.js' },
 					{ src: 'plugin/markdown/markdown.js' },
 					{ src: 'plugin/notes/notes.js', async: true },
-					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
-				]
+				],
+				plugins: [ RevealHighlight ]
 			});
 		</script>
 	</body>
