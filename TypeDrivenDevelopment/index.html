@@ -107,10 +107,51 @@ type NumeroCartao = NumeroCartao of string
 						 | Cheque of NumeroCheque
 						 | Cartao of CartaoDeCreditoInfo
 					</code></pre>
-					<pre class="fragment"><code ><script type="text/template">
-[<Measure>] type Reais
-type Valor = decimal<Reais>
-					</script></code></pre>
+					<pre><code ><script type="text/template">[<Measure>] type Reais
+type Valor = decimal<Reais></script></code></pre>
+					<pre><code class="fragment" data-trim data-noescape>
+						type Moeda = BRL | USD
+					</code></pre>
+				</section>
+				<section>
+					<pre><code data-trim data-noescapes>
+					type Pagamento = {
+							Valor: Valor
+							Moeda: Moeda
+							Metodo: MetodoDePagamento
+					}
+					
+					type Conta = {
+						 Codigo: Guid
+						 ValorTotal: Valor
+						 ValorMinimo: Valor
+						 Vencimento: DateTime
+						 // outras informacoes como cliente. origem, etc
+					}
+					</code></pre>
+					<pre class="fragment"><code data-trim data-noescape class="fragment">
+						type ContaPaga = { CodigoDaConta:Guid; Data: DateTime }
+					</code></pre>
+				</section>
+				<section>
+					<section>
+						<p>Já temos os tipos, mas uma aplicação é maior que isso.</p>
+						<p class="fragment">E os fluxos de dados?</p>
+					</section>
+					<section>
+						<p>Caminho feliz para pagar uma conta</p>
+						<pre><code class="fragment">type PagarConta = Conta -> Pagamento -> ContaPaga</code></pre>
+						<p class="fragment">E se o pagamento der errado? Talvez um booleano indicando o resultado?</p>
+						<pre><code class="fragment">type PagarConta = Conta -> Pagamento -> (bool * ContaPaga)</code></pre>
+					</section>
+					<section>
+						<h1>Discussões de design</h1>
+						<p>Verificar o booleano não é muito descritivo, que tal Option?</p>
+						<pre><code class="fragment">type PagarConta = Conta -> Pagamento -> ContaPaga option</code></pre>
+						<p class="fragment">Agora o option indica se tem ou não, mas não sabemos porque falhou.</p>
+						<pre><code class="fragment"><script type="text/template">type PagarConta = 
+        Conta -> Pagamento -> Result<ContaPaga, string></script></code></pre>
+					</section>
 				</section>
 				<section>
 					<h1>Obrigado!</h1>
