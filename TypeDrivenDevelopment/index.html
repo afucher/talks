@@ -152,6 +152,99 @@ type Valor = decimal<Reais></script></code></pre>
 						<pre><code class="fragment"><script type="text/template">type PagarConta = 
         Conta -> Pagamento -> Result<ContaPaga, string></script></code></pre>
 					</section>
+					<section>
+						<p>Tipo do erro, é string? Da para melhorar...</p>
+						<pre><code class="fragment"><script type="text/template">type PagarConta = 
+    Conta -> Pagamento -> Result<ContaPaga, PagarContaErros></script></code></pre>
+						<p class="fragment">Modelagem de erro</p>
+						<pre><code class="fragment fsharp" language="fsharp" data-trim data-noescape>
+							type PagarContaErros =
+							 | ContaVencida of DateTime
+							 | ValorPagoMenorQueOValorMinimo
+							 | PagamentoAcimaDoValorDaConta
+						</code></pre>
+					</section>
+					<section>
+						<p>Claro que vamos precisar da descrição, mas com os tipos definidos é fácil mapear:</p>
+						<pre><code class="fsharp">
+							type converteErro = PagarContaErros -> string
+						</code></pre>
+						<pre><code class="fsharp" data-trim data-noescape>
+							let obterTextoDoErro erro =
+							 match erro with
+							 | ContaVencida data -> $"A conta esta vencida desde {data}"
+							 | ValorPagoMenorQueOValorMinimo -> "O valor do pagamento nao é o minimo"
+							 | PagamentoAcimaDoValorDaConta -> "Pagamento excede o valor da conta"
+						</code></pre>
+					</section>
+				</section>
+				<section>
+					<section>
+						<h1>E as dependencias?</h1>
+						<ul>
+							<li>Validar o pagamento numa API</li>
+							<li>Responder uma requisição http</li>
+							<li>Recuperar a conta do banco de dados ou de uma API</li>
+						</ul>
+					</section>
+					<section>
+						<pre><code class="fsharp" data-trim data-noescape>
+							type ValidaPagameto = Pagamento -> bool
+						</code></pre>
+						<pre><code class="fsharp" data-trim data-noescape><script type="text/template">type PagarConta = 
+  ValidaPagameto 
+  -> Conta 
+  -> Pagamento 
+  -> Result<ContaPaga, PagarContaErros></script></code></pre>						
+					</section>
+					<section>
+						<pre><code class="fsharp" data-trim data-noescape><script type="text/template">type HttpResponse = { Body: obj; Status: int }
+
+type ContaPagaRepostaHttp = 
+  Result<ContaPaga, PagarContaErros> -> HttpResponse</script>
+						</code></pre>
+					</section>
+					<section>
+						<pre><code class="fsharp" data-trim data-noescape>
+							type PagamentoDTO = {
+								Valor: decimal
+								Moeda: string
+								Metodo: string
+								ContaCodigo: Guid
+						 	}
+
+							type ObterContaPorId = Guid -> Conta
+						</code></pre>
+					</section>
+				</section>
+				<section>
+					<section>
+						<h1>Fluxo final</h1>
+						<pre><code class="fsharp" data-trim data-noescape>
+						type FluxoPagarConta =
+								ObterContaPorId   // --| dependencias
+								-> ValidaPagameto // --|
+								-> PagamentoDTO
+								-> PagarConta
+								-> HttpResponse
+						</code></pre>
+					</section>
+					<section>
+						<h1>Implementação</h1>
+						<pre><code class="fsharp" data-trim data-noescape>
+							let fluxoPagarConta: FluxoPagarConta =
+							 fun obterContaPorId validarConta pagamentoDto pagarConta ->
+
+							 let pagamento = dtoParaEntidade pagamentoDto
+							 let conta = obterContaPorId pagamentoDto.ContaCodigo
+							 let pagar = pagarConta validarConta
+
+							 let resultado = pagar conta pagamento
+							 match resultado with
+							 | Ok taPago -> {Body = taPago; Status=200}
+							 | Error erro -> {Body = obterTextoDoErro erro; Status=400}
+						</code></pre>
+					</section>
 				</section>
 				<section>
 					<h1>Obrigado!</h1>
