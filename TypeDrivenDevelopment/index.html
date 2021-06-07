@@ -86,51 +86,51 @@
 				<section>
 					<h2>Requisitos:</h2>
 					<ul>
-						<li>Formas de pagamento: Dinheiro, Cheque ou Cartão</li>
-						<li>Dinheiro: nenhuma informação extra</li>
-						<li>Cheque: número do cheque</li>
-						<li>Cartão: bandeira e número do cartão</li>
+						<li class="fragment" >Formas de pagamento: Dinheiro, Cheque ou Cartão</li>
+						<li class="fragment">Dinheiro: nenhuma informação extra</li>
+						<li class="fragment">Cheque: número do cheque</li>
+						<li class="fragment">Cartão: bandeira e número do cartão</li>
 					</ul>
 				</section>
 				<section>
-					<pre><code data-trim data-noescape>
+					<pre><code class="fragment fsharp" data-trim data-noescape>
 type NumeroCheque = NumeroCheque of int
 type NumeroCartao = NumeroCartao of string
 					</code></pre>
-					<pre class="fragment"><code data-trim data-noescape>
-						type TipoDeCartao = Visa | Mastercard
-						type CartaoDeCreditoInfo = TipoDeCartao * NumeroCartao
+					<pre ><code class="fragment fsharp" data-trim data-noescape>
+type TipoDeCartao = Visa | Mastercard
+type CartaoDeCreditoInfo = TipoDeCartao * NumeroCartao
 					</code></pre>
-					<pre class="fragment"><code data-trim data-noescape>
-						type MetodoDePagamento = 
-						 | Dinheiro
-						 | Cheque of NumeroCheque
-						 | Cartao of CartaoDeCreditoInfo
+					<pre ><code class="fragment fsharp" data-trim data-noescape>
+type MetodoDePagamento = 
+	 | Dinheiro
+	 | Cheque of NumeroCheque
+	 | Cartao of CartaoDeCreditoInfo
 					</code></pre>
-					<pre><code ><script type="text/template">[<Measure>] type Reais
+					<pre><code class="fragment fsharp"><script type="text/template">[<Measure>] type Reais
 type Valor = decimal<Reais></script></code></pre>
-					<pre><code class="fragment" data-trim data-noescape>
-						type Moeda = BRL | USD
+					<pre><code class="fragment fsharp" data-trim data-noescape>
+type Moeda = BRL | USD
 					</code></pre>
 				</section>
 				<section>
-					<pre><code data-trim data-noescapes>
-					type Pagamento = {
-							Valor: Valor
-							Moeda: Moeda
-							Metodo: MetodoDePagamento
-					}
-					
-					type Conta = {
-						 Codigo: Guid
-						 ValorTotal: Valor
-						 ValorMinimo: Valor
-						 Vencimento: DateTime
-						 // outras informacoes como cliente. origem, etc
-					}
+					<pre><code class="fsharp" data-trim data-noescapes>
+type Pagamento = {
+	Valor: Valor
+	Moeda: Moeda
+	Metodo: MetodoDePagamento
+}
+
+type Conta = {
+	Codigo: Guid
+	ValorTotal: Valor
+	ValorMinimo: Valor
+	Vencimento: DateTime
+	// outras informacoes como cliente. origem, etc
+}
 					</code></pre>
-					<pre class="fragment"><code data-trim data-noescape class="fragment">
-						type ContaPaga = { CodigoDaConta:Guid; Data: DateTime }
+					<pre class="fragment"><code data-trim data-noescape class="fragment fsharp">
+type ContaPaga = { CodigoDaConta:Guid; Data: DateTime }
 					</code></pre>
 				</section>
 				<section>
@@ -150,31 +150,31 @@ type Valor = decimal<Reais></script></code></pre>
 						<pre><code class="fragment">type PagarConta = Conta -> Pagamento -> ContaPaga option</code></pre>
 						<p class="fragment">Agora o option indica se tem ou não, mas não sabemos porque falhou.</p>
 						<pre><code class="fragment"><script type="text/template">type PagarConta = 
-        Conta -> Pagamento -> Result<ContaPaga, string></script></code></pre>
+Conta -> Pagamento -> Result<ContaPaga, string></script></code></pre>
 					</section>
 					<section>
 						<p>Tipo do erro, é string? Da para melhorar...</p>
 						<pre><code class="fragment"><script type="text/template">type PagarConta = 
-    Conta -> Pagamento -> Result<ContaPaga, PagarContaErros></script></code></pre>
+Conta -> Pagamento -> Result<ContaPaga, PagarContaErros></script></code></pre>
 						<p class="fragment">Modelagem de erro</p>
 						<pre><code class="fragment fsharp" language="fsharp" data-trim data-noescape>
-							type PagarContaErros =
-							 | ContaVencida of DateTime
-							 | ValorPagoMenorQueOValorMinimo
-							 | PagamentoAcimaDoValorDaConta
+type PagarContaErros =
+	| ContaVencida of DateTime
+	| ValorPagoMenorQueOValorMinimo
+	| PagamentoAcimaDoValorDaConta
 						</code></pre>
 					</section>
 					<section>
 						<p>Claro que vamos precisar da descrição, mas com os tipos definidos é fácil mapear:</p>
 						<pre><code class="fsharp">
-							type converteErro = PagarContaErros -> string
+type ConverteErro = PagarContaErros -> string
 						</code></pre>
 						<pre><code class="fsharp" data-trim data-noescape>
-							let obterTextoDoErro erro =
-							 match erro with
-							 | ContaVencida data -> $"A conta esta vencida desde {data}"
-							 | ValorPagoMenorQueOValorMinimo -> "O valor do pagamento nao é o minimo"
-							 | PagamentoAcimaDoValorDaConta -> "Pagamento excede o valor da conta"
+let obterTextoDoErro erro =
+	match erro with
+	| ContaVencida data -> $"A conta esta vencida desde {data}"
+	| ValorPagoMenorQueOValorMinimo -> "O valor do pagamento nao é o minimo"
+	| PagamentoAcimaDoValorDaConta -> "Pagamento excede o valor da conta"
 						</code></pre>
 					</section>
 				</section>
@@ -189,31 +189,32 @@ type Valor = decimal<Reais></script></code></pre>
 					</section>
 					<section>
 						<pre><code class="fsharp" data-trim data-noescape>
-							type ValidaPagameto = Pagamento -> bool
+type ValidaPagameto = Pagamento -> bool
 						</code></pre>
-						<pre><code class="fsharp" data-trim data-noescape><script type="text/template">type PagarConta = 
-  ValidaPagameto 
-  -> Conta 
-  -> Pagamento 
-  -> Result<ContaPaga, PagarContaErros></script></code></pre>						
+						<pre><code class="fsharp" data-trim data-noescape><script type="text/template">
+type PagarConta = 
+	ValidaPagameto 
+	-> Conta 
+	-> Pagamento 
+	-> Result<ContaPaga, PagarContaErros>
+	</script></code></pre>						
 					</section>
 					<section>
 						<pre><code class="fsharp" data-trim data-noescape><script type="text/template">type HttpResponse = { Body: obj; Status: int }
-
 type ContaPagaRepostaHttp = 
   Result<ContaPaga, PagarContaErros> -> HttpResponse</script>
 						</code></pre>
 					</section>
 					<section>
 						<pre><code class="fsharp" data-trim data-noescape>
-							type PagamentoDTO = {
-								Valor: decimal
-								Moeda: string
-								Metodo: string
-								ContaCodigo: Guid
-						 	}
+type PagamentoDTO = {
+	Valor: decimal
+	Moeda: string
+	Metodo: string
+	ContaCodigo: Guid
+}
 
-							type ObterContaPorId = Guid -> Conta
+type ObterContaPorId = Guid -> Conta
 						</code></pre>
 					</section>
 				</section>
@@ -221,28 +222,28 @@ type ContaPagaRepostaHttp =
 					<section>
 						<h1>Fluxo final</h1>
 						<pre><code class="fsharp" data-trim data-noescape>
-						type FluxoPagarConta =
-								ObterContaPorId   // --| dependencias
-								-> ValidaPagameto // --|
-								-> PagamentoDTO
-								-> PagarConta
-								-> HttpResponse
+type FluxoPagarConta =
+		ObterContaPorId   // --| dependencias
+		-> ValidaPagameto // --|
+		-> PagamentoDTO
+		-> PagarConta
+		-> HttpResponse
 						</code></pre>
 					</section>
 					<section>
 						<h1>Implementação</h1>
 						<pre><code class="fsharp" data-trim data-noescape>
-							let fluxoPagarConta: FluxoPagarConta =
-							 fun obterContaPorId validarConta pagamentoDto pagarConta ->
+let fluxoPagarConta: FluxoPagarConta =
+	fun obterContaPorId validarConta pagamentoDto pagarConta ->
 
-							 let pagamento = dtoParaEntidade pagamentoDto
-							 let conta = obterContaPorId pagamentoDto.ContaCodigo
-							 let pagar = pagarConta validarConta
+	let pagamento = dtoParaEntidade pagamentoDto
+	let conta = obterContaPorId pagamentoDto.ContaCodigo
+	let pagar = pagarConta validarConta
 
-							 let resultado = pagar conta pagamento
-							 match resultado with
-							 | Ok taPago -> {Body = taPago; Status=200}
-							 | Error erro -> {Body = obterTextoDoErro erro; Status=400}
+	let resultado = pagar conta pagamento
+	match resultado with
+	| Ok taPago -> {Body = taPago; Status=200}
+	| Error erro -> {Body = obterTextoDoErro erro; Status=400}
 						</code></pre>
 					</section>
 				</section>
@@ -254,6 +255,10 @@ type ContaPagaRepostaHttp =
 				</section>
 				<section>
 					<h1>Links:</h1>
+					<ul>
+						<li><a href="https://afucher.github.io/talks/TypeDrivenDevelopment/">Essa apresentação</a></li>
+						<li> <a href="https://github.com/lucasteles/type-driven-talk/blob/master/TypeDriven/Domain.fs">Codigo fonte dos exemplos</a> <li/>
+					</ul>
 				</section>
 
 			</div>
