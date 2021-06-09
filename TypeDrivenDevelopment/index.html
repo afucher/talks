@@ -30,6 +30,16 @@
 					<h2>Type Driven Development</h2>
 				</section>
 				<section>
+					<section>
+						<h2>Avisos!</h2>
+					</section>
+					<section>
+						<p>Estamos usando F#, apenas para exemplificar :)</p>
+						<img src="./assets/images/fsharp256.png" alt="FSharp Logo" id="fsharp_logo">
+						<p>Motivações: Estaticamente tipada e possui tipos algébricos</p>
+					</section>
+				</section>
+				<section>
 					<h2>Tipos</h2>
 					<ul>
 						<li class="fragment" data-fragment-index="2">Tipos não são classes</span></li>
@@ -59,25 +69,47 @@
 					</section>
 					<section>
 						<h1>Composição com AND (e)</h1>
-						<p>SaladaDeFruta = Uma 🍎 e 🍌 e 🍒</p>
+						<p>SaladaDeFruta = Um 🍍 e 🍌 e 🍒</p>
 						<pre><code data-trim data-noescape>
-							type FruitSalad = {
-								Apple: AppleVariety
-								Banana: BananaVariety
-								Cherry: CherryVariety
+							type SaladaDeFruta = {
+								Abacaxi: VariaçãoAbacaxi
+								Banana: VariaçãoBanana
+								Cereja: VariaçãoCereja
 							}
 						</code></pre>
 					</section>
 					<section>
 						<h1>Composição com OR (ou)</h1>
-						<p>Lanche = Uma 🍎 ou 🍌 ou 🍒</p>
+						<p>Lanche = Uma 🍍 ou 🍌 ou 🍒</p>
 						<pre><code data-trim data-noescape>
 							type Lanche = 
-							 |  Apple  of AppleVariety
-							 |  Banana of BananaVariety
-							 |  Cherry of CherryVariety
-							
+							 | Abacaxi of VariaçãoAbacaxi
+							 | Banana  of VariaçãoBanana
+							 | Cereja  of VariaçãoCereja
 						</code></pre>
+					</section>
+				</section>
+				<section>
+					<section>
+						<h1>Type Driven Development</h1>
+					</section>
+					<section>
+						<blockquote cite="https://blog.ploeh.dk/2015/08/10/type-driven-development/">
+							A strong type system can not only prevent errors, but also guide you and provide feedback in your design process.
+						</blockquote>
+						Mark Seemann via <a href="https://blog.ploeh.dk/2015/08/10/type-driven-development/">blog.ploeh.dk</a>
+					</section>
+					<section>
+						<blockquote cite="https://blog.ploeh.dk/2015/08/10/type-driven-development/">
+							Um sistema de tipagem forte pode não apenas evitar erros, mas também orientar e fornecer feedback sobre o processo do seu design.
+						</blockquote>
+						Tradução livre. Teles, Lucas
+					</section>
+					<section>
+						<blockquote>
+							É uma maneira de desenhar a estrutura da aplicação, sem implementar mas meio que já implementando.
+						</blockquote>
+						Nós.
 					</section>
 				</section>
 				<section>
@@ -85,11 +117,13 @@
 				</section>
 				<section>
 					<h2>Requisitos:</h2>
+					<p>Pagar uma conta</p>
 					<ul>
-						<li class="fragment" >Formas de pagamento: Dinheiro, Cheque ou Cartão</li>
+						<li class="fragment">Formas de pagamento: Dinheiro, Cheque ou Cartão</li>
 						<li class="fragment">Dinheiro: nenhuma informação extra</li>
 						<li class="fragment">Cheque: número do cheque</li>
 						<li class="fragment">Cartão: bandeira e número do cartão</li>
+						<li class="fragment">Real e Dolar</li>
 					</ul>
 				</section>
 				<section>
@@ -130,7 +164,7 @@ type Conta = {
 }
 					</code></pre>
 					<pre class="fragment"><code data-trim data-noescape class="fragment fsharp">
-type ContaPaga = { CodigoDaConta:Guid; Data: DateTime }
+type ContaFoiPaga = { CodigoDaConta:Guid; Data: DateTime }
 					</code></pre>
 				</section>
 				<section>
@@ -140,22 +174,22 @@ type ContaPaga = { CodigoDaConta:Guid; Data: DateTime }
 					</section>
 					<section>
 						<p>Caminho feliz para pagar uma conta</p>
-						<pre><code class="fragment">type PagarConta = Conta -> Pagamento -> ContaPaga</code></pre>
+						<pre><code class="fragment">type PagarConta = Conta -> Pagamento -> ContaFoiPaga</code></pre>
 						<p class="fragment">E se o pagamento der errado? Talvez um booleano indicando o resultado?</p>
-						<pre><code class="fragment">type PagarConta = Conta -> Pagamento -> (bool * ContaPaga)</code></pre>
+						<pre><code class="fragment">type PagarConta = Conta -> Pagamento -> (bool * ContaFoiPaga)</code></pre>
 					</section>
 					<section>
 						<h1>Discussões de design</h1>
 						<p>Verificar o booleano não é muito descritivo, que tal Option?</p>
-						<pre><code class="fragment">type PagarConta = Conta -> Pagamento -> ContaPaga option</code></pre>
+						<pre><code class="fragment">type PagarConta = Conta -> Pagamento -> ContaFoiPaga option</code></pre>
 						<p class="fragment">Agora o option indica se tem ou não, mas não sabemos porque falhou.</p>
 						<pre><code class="fragment"><script type="text/template">type PagarConta = 
-Conta -> Pagamento -> Result<ContaPaga, string></script></code></pre>
+Conta -> Pagamento -> Result<ContaFoiPaga, string></script></code></pre>
 					</section>
 					<section>
 						<p>Tipo do erro, é string? Da para melhorar...</p>
 						<pre><code class="fragment"><script type="text/template">type PagarConta = 
-Conta -> Pagamento -> Result<ContaPaga, PagarContaErros></script></code></pre>
+Conta -> Pagamento -> Result<ContaFoiPaga, PagarContaErros></script></code></pre>
 						<p class="fragment">Modelagem de erro</p>
 						<pre><code class="fragment fsharp" language="fsharp" data-trim data-noescape>
 type PagarContaErros =
@@ -171,10 +205,10 @@ type ConverteErro = PagarContaErros -> string
 						</code></pre>
 						<pre><code class="fsharp" data-trim data-noescape>
 let obterTextoDoErro erro =
-	match erro with
-	| ContaVencida data -> $"A conta esta vencida desde {data}"
-	| ValorPagoMenorQueOValorMinimo -> "O valor do pagamento nao é o minimo"
-	| PagamentoAcimaDoValorDaConta -> "Pagamento excede o valor da conta"
+  match erro with
+  | ContaVencida data -> $"A conta esta vencida desde {data}"
+  | ValorPagoMenorQueOValorMinimo -> "O valor do pagamento nao é o minimo"
+  | PagamentoAcimaDoValorDaConta -> "Pagamento excede o valor da conta"
 						</code></pre>
 					</section>
 				</section>
@@ -196,13 +230,13 @@ type PagarConta =
 	ValidaPagameto 
 	-> Conta 
 	-> Pagamento 
-	-> Result<ContaPaga, PagarContaErros>
+	-> Result<ContaFoiPaga, PagarContaErros>
 	</script></code></pre>						
 					</section>
 					<section>
 						<pre><code class="fsharp" data-trim data-noescape><script type="text/template">type HttpResponse = { Body: obj; Status: int }
-type ContaPagaRepostaHttp = 
-  Result<ContaPaga, PagarContaErros> -> HttpResponse</script>
+type ContaFoiPagaRepostaHttp = 
+  Result<ContaFoiPaga, PagarContaErros> -> HttpResponse</script>
 						</code></pre>
 					</section>
 					<section>
