@@ -264,10 +264,12 @@ type FluxoPagarConta =
 		-> HttpResponse
 						</code></pre>
 					</section>
+				</section>
+				<section>
 					<section>
 						<h1>Implementação</h1>
 						<pre><code class="fsharp" data-trim data-noescape>
-let fluxoPagarConta: FluxoPagarConta =
+	let fluxoPagarConta: FluxoPagarConta =
 	fun obterContaPorId validarConta pagamentoDto pagarConta ->
 
 	let pagamento = dtoParaEntidade pagamentoDto
@@ -280,6 +282,57 @@ let fluxoPagarConta: FluxoPagarConta =
 	| Error erro -> {Body = obterTextoDoErro erro; Status=400}
 						</code></pre>
 					</section>
+					<section>
+						<h1>Gerar recibo</h1>
+						<pre><code class="fsharp" data-trim data-noescape>
+type GerarRecibo = Conta -> unit
+						</code></pre>
+						<p class="fragment">Qual a garantia que a conta já está paga?</p>
+						<pre><code class="fsharp fragment" data-line-numbers="5" data-trim data-noescape>
+type Conta = {
+Codigo: Guid
+ValorTotal: Valor
+// outros campos ...
+Pago: bool
+}
+						</code></pre>
+						<p class="fragment">Isso significa que vou ser obrigado a validar esse campo</p>
+					</section>
+					<section>
+						<p class="small">E se o código nem compilar se a conta não estiver paga?</p>
+						<p class="small fragment">Podemos trocar flags por tipos:</p>
+						<pre><code class="fsharp fragment" data-trim data-noescape >
+							type ContaPendente = {
+								Codigo: Guid
+								ValorTotal: Valor
+								// outros campos ...
+							 }
+						 
+							 type ContaPaga = {
+								Codigo: Guid
+								ValorTotal: Valor
+								// outros campos ...
+								DataPagamento: DateTime
+							 }
+						</code></pre>
+						<pre><code class="fsharp fragment" data-trim data-noescape >
+							 type Conta = ContaPendente | ContaPaga
+						</code></pre>
+					</section>
+					<section>
+						<h1>Evoluindo o código</h1>
+						<pre><code class="fsharp" data-trim data-noescape><script type="text/template">type PagarConta = 
+  ValidaPagameto 
+  -> ContaPendente
+  -> Pagamento 
+  -> Result<ContaFoiPaga, PagarContaErros></script>
+						</code></pre>
+						<p class="fragment">Com isso garantimos que não pagamos uma conta paga.</p>
+						<pre><code class="fsharp" data-trim data-noescape>
+type GerarRecibo = ContaPaga -> unit
+						</code></pre>
+						<p class="fragment">E que o recibo é gerado para uma conta que foi paga.</p>
+					</section>
 				</section>
 				<section>
 					<h1>Obrigado!</h1>
@@ -291,7 +344,9 @@ let fluxoPagarConta: FluxoPagarConta =
 					<h1>Links:</h1>
 					<ul>
 						<li><a href="https://afucher.github.io/talks/TypeDrivenDevelopment/">Essa apresentação</a></li>
-						<li> <a href="https://github.com/lucasteles/type-driven-talk/blob/master/TypeDriven/Domain.fs">Codigo fonte dos exemplos</a> <li/>
+						<li><a href="https://github.com/lucasteles/type-driven-talk/blob/master/TypeDriven/Domain.fs">Codigo fonte dos exemplos</a></li>
+						<li><a href="https://blog.ploeh.dk/2015/08/10/type-driven-development/">Type Driven Development by Mark Seemann</a></li>
+						<li><a href="https://docs.microsoft.com/en-us/dotnet/fsharp/language-reference/fsharp-types">Tipos em FSharp</a></li>
 					</ul>
 				</section>
 

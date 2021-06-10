@@ -24,3 +24,28 @@
  .reveal h4{
     text-transform: unset;
  }
+
+
+ .highlight-line {
+   background: darkslateblue;
+ }
+
+ .hljs-ln-numbers {
+   display: none;
+ }
+
+ .reveal table td.hljs-ln-numbers {
+    border-bottom: none;
+ }
+.reveal table td.hljs-ln-code {
+   border-bottom: none;
+}
+
+.reveal table.hljs-ln {
+   margin: unset;
+}
+
+p.small {
+   font-size: 36px;
+}
+ 
