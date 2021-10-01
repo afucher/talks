@@ -24,3 +24,7 @@
  .reveal h4{
     text-transform: unset;
  }
+
+ .reveal li{
+    font-size: 38px;
+ }
